@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.x-mark {
+  width: 26px;
+  height: 26px;
+  position: relative;
+}
+.x-mark:after {
+  content: "";
+  height: 26px;
+  border-left: 4px solid rgb(71 85 105);
+  position: absolute;
+  transform: rotate(45deg);
+  left: 11px;
+}
+
+.x-mark:before {
+  content: "";
+  height: 26px;
+  border-left: 4px solid rgb(71 85 105);
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 11px;
+}
+
+.striped {
+  background: repeating-linear-gradient(
+    45deg,
+    hsl(200, 90%, 55%),
+    hsl(200, 90%, 55%) 7px,
+    hsl(200, 90%, 47%) 7px,
+    hsl(200, 90%, 47%) 14px
+  );
+}
+
+.loading {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.4;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
