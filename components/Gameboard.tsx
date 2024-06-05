@@ -7,7 +7,15 @@ import React, {
   useState,
 } from "react";
 
-const colors = ["blue", "green", "yellow", "orange", "red", "pink", "violet"];
+const colors = [
+  "blue",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+  "fuchsia",
+  "violet",
+];
 
 interface Element {
   direction: [number, number];
@@ -15,14 +23,20 @@ interface Element {
   color: string;
 }
 
-const elementSize = 18;
+const elementSize = 23;
 
 export const Gameboard: FunctionComponent = ({}) => {
   const [elements, setElements] = useState<Element[]>([]);
 
   const addElement: MouseEventHandler = (e) => {
+    const newDirection = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+    // normalize the direction vector
+    const magnitude =
+      Math.sqrt(newDirection[0] ** 2 + newDirection[1] ** 2) / 2;
+    newDirection[0] /= magnitude;
+    newDirection[1] /= magnitude;
     const newElement: Element = {
-      direction: [Math.random() * 2 - 1, Math.random() * 2 - 1],
+      direction: newDirection as [number, number],
       position: [e.clientX, e.clientY],
       color: colors[Math.floor(Math.random() * colors.length)],
     };
@@ -35,6 +49,7 @@ export const Gameboard: FunctionComponent = ({}) => {
         elements.map((element) => {
           const [x, y] = element.position;
           const [dx, dy] = element.direction;
+          // Bounce off the walls
           const newX = Math.max(
             0,
             Math.min(x + dx, window.innerWidth - elementSize)
@@ -43,12 +58,24 @@ export const Gameboard: FunctionComponent = ({}) => {
             0,
             Math.min(y + dy, window.innerHeight - elementSize)
           );
-          return { ...element, position: [newX, newY] };
+          const tolerance = 4;
+          // Bounce off the walls
+          const newDx = x === newX ? -dx : dx;
+          const newDy = y === newY ? -dy : dy;
+          return {
+            ...element,
+            color:
+              x === newX || y === newY
+                ? colors[(colors.indexOf(element.color) + 1) % colors.length]
+                : element.color,
+            position: [newX, newY],
+            direction: [newDx, newDy],
+          };
         })
       );
     }, 10);
     return () => clearInterval(interval);
-  }, [elements, window.innerHeight, window.innerWidth]);
+  }, [elements]);
 
   return (
     <div className="fixed h-screen bg-slate-800 w-screen" onClick={addElement}>
@@ -56,7 +83,7 @@ export const Gameboard: FunctionComponent = ({}) => {
         <div
           key={index}
           className={
-            "absolute w-4 h-4 rounded-full " + `bg-${element.color}-500`
+            "absolute w-5 h-5 rounded-full " + `bg-${element.color}-500`
           }
           style={{
             left: element.position[0],
