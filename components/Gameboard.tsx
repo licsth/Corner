@@ -29,14 +29,9 @@ export const Gameboard: FunctionComponent = ({}) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const addElement: MouseEventHandler = (e) => {
-    const newDirection = [Math.random() * 2 - 1, Math.random() * 2 - 1];
-    // normalize the direction vector
-    const magnitude =
-      Math.sqrt(newDirection[0] ** 2 + newDirection[1] ** 2) / 2;
-    newDirection[0] /= magnitude;
-    newDirection[1] /= magnitude;
+    const angle = Math.random() * 2 * Math.PI;
     const newElement: Element = {
-      direction: newDirection as [number, number],
+      direction: [Math.cos(angle) * 2, Math.sin(angle) * 2],
       position: [e.clientX, e.clientY],
       color: colors[Math.floor(Math.random() * colors.length)],
     };
@@ -55,7 +50,7 @@ export const Gameboard: FunctionComponent = ({}) => {
         for (let i = 0; i < circleElementNumber; i++) {
           const angle = (i * 2 * Math.PI) / circleElementNumber;
           const newElement: Element = {
-            direction: [Math.cos(angle), Math.sin(angle)],
+            direction: [Math.cos(angle) * 2, Math.sin(angle) * 2],
             position: [mousePosition.x, mousePosition.y],
             color: colors[Math.floor(Math.random() * colors.length)],
           };
@@ -114,7 +109,7 @@ export const Gameboard: FunctionComponent = ({}) => {
           };
         })
       );
-    }, 10);
+    }, 15);
     return () => clearInterval(interval);
   }, []);
 
