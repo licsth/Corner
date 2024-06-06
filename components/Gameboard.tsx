@@ -86,7 +86,7 @@ export const Gameboard: FunctionComponent = ({}) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setElements(
+      setElements((elements) =>
         elements.map((element) => {
           const [x, y] = element.position;
           const [dx, dy] = element.direction;
@@ -116,7 +116,7 @@ export const Gameboard: FunctionComponent = ({}) => {
       );
     }, 10);
     return () => clearInterval(interval);
-  }, [elements]);
+  }, []);
 
   return (
     <div className="fixed h-screen bg-slate-800 w-screen" onClick={addElement}>
