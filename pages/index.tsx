@@ -8,7 +8,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Hit the corner!</title>
+        <title>"Na klar bin ich gerade produktiv"</title>
       </Head>
       <Gameboard />
     </div>
