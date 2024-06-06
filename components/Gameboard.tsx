@@ -29,6 +29,7 @@ const directionMagnitude = 2.5;
 export const Gameboard: FunctionComponent = ({}) => {
   const [elements, setElements] = useState<Element[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [gravityOn, setGravityOn] = useState(false);
 
   const addElement: MouseEventHandler = (e) => {
     const angle = Math.random() * 2 * Math.PI;
@@ -74,6 +75,8 @@ export const Gameboard: FunctionComponent = ({}) => {
             };
           })
         );
+      } else if (e.key === " ") {
+        setGravityOn((g) => !g);
       }
     };
 
@@ -89,37 +92,52 @@ export const Gameboard: FunctionComponent = ({}) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setElements((elements) =>
-        elements.map((element) => {
-          const [x, y] = element.position;
-          const [dx, dy] = element.direction;
-          const newX = Math.max(
-            0,
-            Math.min(x + dx, window.innerWidth - elementSize)
-          );
-          const newY = Math.max(
-            0,
-            Math.min(y + dy, window.innerHeight - elementSize)
-          );
-          // Bounce off the walls
-          const bouncedX = x === newX && dx !== 0;
-          const bouncedY = y === newY && dy !== 0;
-          const newDx = bouncedX ? -dx : dx;
-          const newDy = bouncedY ? -dy : dy;
-          return {
-            ...element,
-            color:
-              bouncedX || bouncedY
-                ? colors[(colors.indexOf(element.color) + 1) % colors.length]
-                : element.color,
-            position: [newX, newY],
-            direction: [newDx, newDy],
-          };
-        })
-      );
+      setMousePosition((mousePosition) => {
+        setElements((elements) =>
+          elements.map((element) => {
+            const [x, y] = element.position;
+            const [dx, dy] = element.direction;
+            const newX = Math.max(
+              0,
+              Math.min(x + dx, window.innerWidth - elementSize)
+            );
+            const newY = Math.max(
+              0,
+              Math.min(y + dy, window.innerHeight - elementSize)
+            );
+            // Bounce off the walls
+            const bouncedX = x === newX && dx !== 0;
+            const bouncedY = y === newY && dy !== 0;
+            let gravityX = 0;
+            let gravityY = 0;
+            let gravityMagnitude = 0;
+            if (gravityOn) {
+              const mouseDiffX = mousePosition.x - x;
+              const mouseDiffY = mousePosition.y - y;
+              const distance = Math.sqrt(mouseDiffX ** 2 + mouseDiffY ** 2);
+              gravityMagnitude = 0.1;
+              gravityX = (mouseDiffX / (distance + 0.1)) * gravityMagnitude;
+              gravityY = (mouseDiffY / (distance + 0.1)) * gravityMagnitude;
+            }
+            let directionMagnitude = 1 - gravityMagnitude * gravityMagnitude;
+            const newDx = (bouncedX ? -dx : dx) * directionMagnitude + gravityX;
+            const newDy = (bouncedY ? -dy : dy) * directionMagnitude + gravityY;
+            return {
+              ...element,
+              color:
+                bouncedX || bouncedY
+                  ? colors[(colors.indexOf(element.color) + 1) % colors.length]
+                  : element.color,
+              position: [newX, newY],
+              direction: [newDx, newDy],
+            };
+          })
+        );
+        return mousePosition;
+      });
     }, intervalDuration);
     return () => clearInterval(interval);
-  }, []);
+  }, [gravityOn]);
 
   return (
     <div className="fixed h-screen bg-slate-800 w-screen" onClick={addElement}>
