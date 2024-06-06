@@ -116,8 +116,12 @@ export const Gameboard: FunctionComponent = ({}) => {
               const mouseDiffY = mousePosition.y - y;
               const distance = Math.sqrt(mouseDiffX ** 2 + mouseDiffY ** 2);
               gravityMagnitude = 0.1;
-              gravityX = (mouseDiffX / (distance + 0.1)) * gravityMagnitude;
-              gravityY = (mouseDiffY / (distance + 0.1)) * gravityMagnitude;
+              gravityX =
+                (mouseDiffX / (Math.pow(distance, 1.3) / 5 + 0.01)) *
+                gravityMagnitude;
+              gravityY =
+                (mouseDiffY / (Math.pow(distance, 1.3) / 5 + 0.01)) *
+                gravityMagnitude;
             }
             let directionMagnitude = 1 - gravityMagnitude * gravityMagnitude;
             const newDx = (bouncedX ? -dx : dx) * directionMagnitude + gravityX;
