@@ -1,9 +1,7 @@
-import { max, min, range, set } from "lodash";
 import React, {
   FunctionComponent,
   MouseEventHandler,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -49,7 +47,6 @@ export const Gameboard: FunctionComponent = ({}) => {
         elements.map((element) => {
           const [x, y] = element.position;
           const [dx, dy] = element.direction;
-          // Bounce off the walls
           const newX = Math.max(
             0,
             Math.min(x + dx, window.innerWidth - elementSize)
@@ -58,7 +55,6 @@ export const Gameboard: FunctionComponent = ({}) => {
             0,
             Math.min(y + dy, window.innerHeight - elementSize)
           );
-          const tolerance = 4;
           // Bounce off the walls
           const newDx = x === newX ? -dx : dx;
           const newDy = y === newY ? -dy : dy;
