@@ -21,10 +21,12 @@ interface Element {
   color: string;
 }
 
-const elementSize = 23;
+const elementSize = 22;
+const circleElementNumber = 51;
 
 export const Gameboard: FunctionComponent = ({}) => {
   const [elements, setElements] = useState<Element[]>([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const addElement: MouseEventHandler = (e) => {
     const newDirection = [Math.random() * 2 - 1, Math.random() * 2 - 1];
@@ -42,6 +44,37 @@ export const Gameboard: FunctionComponent = ({}) => {
   };
 
   useEffect(() => {
+    const updateMousePosition = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        // spawn circleElementNumber elements with directions uniformly along a circle
+        for (let i = 0; i < circleElementNumber; i++) {
+          const angle = (i * 2 * Math.PI) / circleElementNumber;
+          const newElement: Element = {
+            direction: [Math.cos(angle), Math.sin(angle)],
+            position: [mousePosition.x, mousePosition.y],
+            color: colors[Math.floor(Math.random() * colors.length)],
+          };
+          setElements((elements) => [...elements, newElement]);
+        }
+      }
+    };
+
+    window.addEventListener("mousemove", updateMousePosition);
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      window.removeEventListener("mousemove", updateMousePosition);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mousePosition]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setElements(
         elements.map((element) => {
@@ -56,12 +89,14 @@ export const Gameboard: FunctionComponent = ({}) => {
             Math.min(y + dy, window.innerHeight - elementSize)
           );
           // Bounce off the walls
-          const newDx = x === newX ? -dx : dx;
-          const newDy = y === newY ? -dy : dy;
+          const bouncedX = x === newX && dx !== 0;
+          const bouncedY = y === newY && dy !== 0;
+          const newDx = bouncedX ? -dx : dx;
+          const newDy = bouncedY ? -dy : dy;
           return {
             ...element,
             color:
-              x === newX || y === newY
+              bouncedX || bouncedY
                 ? colors[(colors.indexOf(element.color) + 1) % colors.length]
                 : element.color,
             position: [newX, newY],
@@ -78,12 +113,12 @@ export const Gameboard: FunctionComponent = ({}) => {
       {elements.map((element, index) => (
         <div
           key={index}
-          className={
-            "absolute w-5 h-5 rounded-full " + `bg-${element.color}-500`
-          }
+          className={"absolute rounded-full " + `bg-${element.color}-500`}
           style={{
             left: element.position[0],
             top: element.position[1],
+            width: elementSize,
+            height: elementSize,
           }}
         />
       ))}
