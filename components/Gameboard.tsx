@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 
-const colors = [
+export const colors = [
   "blue",
   "green",
   "yellow",
@@ -15,13 +15,13 @@ const colors = [
   "violet",
 ];
 
-interface Element {
+export interface Element {
   direction: [number, number];
   position: [number, number];
   color: string;
 }
 
-const elementSize = 22;
+export const elementSize = 22;
 const circleElementNumber = 51;
 const intervalDuration = 20;
 const directionMagnitude = 2.5;

@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Element, colors, elementSize } from "./Gameboard";
 
 interface Obstacle {
   position: [number, number];
@@ -15,6 +16,12 @@ export const Parkour: FunctionComponent = () => {
   const [selectedObstacleIndex, setSelectedObstacleIndex] = useState<
     number | null
   >(null);
+  const [element, setElement] = useState<Element>({
+    color: "yellow",
+    direction: [3, 0],
+    position: [0, 0],
+  });
+  const [elementMoving, setElementMoving] = useState(false);
 
   const addObstacle: MouseEventHandler = (e) => {
     const newObstacle: Obstacle = {
@@ -119,6 +126,38 @@ export const Parkour: FunctionComponent = () => {
     };
   }, [selectedObstacleIndex]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElement((element) => {
+        if (!elementMoving) return element;
+        const [x, y] = element.position;
+        const [dx, dy] = element.direction;
+        const newX = Math.max(
+          0,
+          Math.min(x + dx, window.innerWidth - elementSize)
+        );
+        const newY = Math.max(
+          0,
+          Math.min(y + dy, window.innerHeight - elementSize)
+        );
+        const bouncedX = x === newX && dx !== 0;
+        const bouncedY = y === newY && dy !== 0;
+        const newDx = bouncedX ? -dx : dx;
+        const newDy = bouncedY ? -dy : dy;
+        return {
+          ...element,
+          color:
+            bouncedX || bouncedY
+              ? colors[(colors.indexOf(element.color) + 1) % colors.length]
+              : element.color,
+          position: [newX, newY],
+          direction: [newDx, newDy],
+        };
+      });
+    }, 20);
+    return () => clearInterval(interval);
+  }, [elementMoving, obstacles]);
+
   return (
     <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
       {obstacles.map((obstacle, index) => (
@@ -137,6 +176,15 @@ export const Parkour: FunctionComponent = () => {
           }}
         />
       ))}
+      <div
+        className={"absolute rounded-full " + `bg-${element.color}-500`}
+        style={{
+          left: element.position[0],
+          top: element.position[1],
+          width: elementSize,
+          height: elementSize,
+        }}
+      />
     </div>
   );
 };
