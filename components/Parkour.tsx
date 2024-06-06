@@ -5,8 +5,9 @@ import {
   useState,
 } from "react";
 import { Element, colors, elementSize } from "./Gameboard";
+import { checkCollision } from "../utilities/checkCollision";
 
-interface Obstacle {
+export interface Obstacle {
   position: [number, number];
   size: [number, number];
 }
@@ -18,10 +19,10 @@ export const Parkour: FunctionComponent = () => {
   >(null);
   const [element, setElement] = useState<Element>({
     color: "yellow",
-    direction: [3, 0],
+    direction: [3, 1],
     position: [0, 0],
   });
-  const [elementMoving, setElementMoving] = useState(false);
+  const [elementMoving, setElementMoving] = useState(true);
 
   const addObstacle: MouseEventHandler = (e) => {
     const newObstacle: Obstacle = {
@@ -142,12 +143,20 @@ export const Parkour: FunctionComponent = () => {
         );
         const bouncedX = x === newX && dx !== 0;
         const bouncedY = y === newY && dy !== 0;
-        const newDx = bouncedX ? -dx : dx;
-        const newDy = bouncedY ? -dy : dy;
+
+        let newDx = bouncedX ? -dx : dx;
+        let newDy = bouncedY ? -dy : dy;
+
+        // Check for obstacle collisions
+        const { collidesX, collidesY } = checkCollision(newX, newY, obstacles);
+
+        if (collidesX) newDx = -newDx;
+        if (collidesY) newDy = -newDy;
+
         return {
           ...element,
           color:
-            bouncedX || bouncedY
+            bouncedX || bouncedY || collidesX || collidesY
               ? colors[(colors.indexOf(element.color) + 1) % colors.length]
               : element.color,
           position: [newX, newY],
