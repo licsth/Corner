@@ -157,6 +157,14 @@ export const Gameboard: FunctionComponent = ({}) => {
           }}
         />
       ))}
+      {elements.length === 0 && (
+        <div className="text-center w-full h-full justify-center flex items-center text-slate-300">
+          Click: spawn element <br />
+          Tab: spawn circle <br />
+          Enter: sync all colors <br />
+          Space: toggle gravity
+        </div>
+      )}
     </div>
   );
 };
