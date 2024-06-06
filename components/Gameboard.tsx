@@ -61,6 +61,16 @@ export const Gameboard: FunctionComponent = ({}) => {
           };
           setElements((elements) => [...elements, newElement]);
         }
+      } else if (e.key === "Enter") {
+        // set all colors to blue
+        setElements((elements) =>
+          elements.map((element) => {
+            return {
+              ...element,
+              color: "blue",
+            };
+          })
+        );
       }
     };
 
