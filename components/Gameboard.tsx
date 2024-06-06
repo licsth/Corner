@@ -23,6 +23,8 @@ interface Element {
 
 const elementSize = 22;
 const circleElementNumber = 51;
+const intervalDuration = 20;
+const directionMagnitude = 2.5;
 
 export const Gameboard: FunctionComponent = ({}) => {
   const [elements, setElements] = useState<Element[]>([]);
@@ -31,7 +33,10 @@ export const Gameboard: FunctionComponent = ({}) => {
   const addElement: MouseEventHandler = (e) => {
     const angle = Math.random() * 2 * Math.PI;
     const newElement: Element = {
-      direction: [Math.cos(angle) * 2, Math.sin(angle) * 2],
+      direction: [
+        Math.cos(angle) * directionMagnitude,
+        Math.sin(angle) * directionMagnitude,
+      ],
       position: [e.clientX, e.clientY],
       color: colors[Math.floor(Math.random() * colors.length)],
     };
@@ -50,7 +55,10 @@ export const Gameboard: FunctionComponent = ({}) => {
         for (let i = 0; i < circleElementNumber; i++) {
           const angle = (i * 2 * Math.PI) / circleElementNumber;
           const newElement: Element = {
-            direction: [Math.cos(angle) * 2, Math.sin(angle) * 2],
+            direction: [
+              Math.cos(angle) * directionMagnitude,
+              Math.sin(angle) * directionMagnitude,
+            ],
             position: [mousePosition.x, mousePosition.y],
             color: colors[Math.floor(Math.random() * colors.length)],
           };
@@ -109,7 +117,7 @@ export const Gameboard: FunctionComponent = ({}) => {
           };
         })
       );
-    }, 15);
+    }, intervalDuration);
     return () => clearInterval(interval);
   }, []);
 
