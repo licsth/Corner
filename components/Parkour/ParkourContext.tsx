@@ -5,6 +5,7 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { Obstacle } from "./Parkour";
@@ -23,6 +24,8 @@ export const ParkourContext = createContext<{
   setGoalRadius: Dispatch<SetStateAction<number>>;
   goalPosition: [number, number];
   setGoalPosition: Dispatch<SetStateAction<[number, number]>>;
+  goalSelected: boolean;
+  setGoalSelected: Dispatch<SetStateAction<boolean>>;
 }>({
   obstacles: [],
   setObstacles: () => {},
@@ -40,6 +43,8 @@ export const ParkourContext = createContext<{
   setGoalRadius: () => {},
   goalPosition: [0, 0],
   setGoalPosition: () => {},
+  goalSelected: false,
+  setGoalSelected: () => {},
 });
 
 export const ParkourContextWrapper: FunctionComponent<{
@@ -58,6 +63,15 @@ export const ParkourContextWrapper: FunctionComponent<{
   const [elementMoving, setElementMoving] = useState(true);
   const [goalPosition, setGoalPosition] = useState<[number, number]>([0, 0]);
   const [goalRadius, setGoalRadius] = useState(100);
+  const [goalSelected, setGoalSelected] = useState(false);
+
+  useEffect(() => {
+    if (goalSelected) setSelectedObstacleIndex(null);
+  }, [goalSelected]);
+
+  useEffect(() => {
+    if (selectedObstacleIndex != null) setGoalSelected(false);
+  }, [selectedObstacleIndex]);
 
   return (
     <ParkourContext.Provider
@@ -74,6 +88,8 @@ export const ParkourContextWrapper: FunctionComponent<{
         setGoalRadius,
         goalPosition,
         setGoalPosition,
+        goalSelected,
+        setGoalSelected,
       }}
     >
       {children}
