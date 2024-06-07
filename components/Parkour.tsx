@@ -58,12 +58,18 @@ export const Parkour: FunctionComponent = () => {
         e.preventDefault();
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
-
+          let newHeight = obstacle.size[0];
+          let newWidth = obstacle.size[1];
+          // cut off the obstacle if it goes out of the window
+          if (obstacle.position[0] + newWidth > window.innerWidth)
+            newWidth = window.innerWidth - obstacle.position[0];
+          if (obstacle.position[1] + newHeight > window.innerHeight)
+            newHeight = window.innerHeight - obstacle.position[1];
           return [
             ...obstacles.slice(0, selectedObstacleIndex),
             {
               ...obstacle,
-              size: [obstacle.size[1], obstacle.size[0]],
+              size: [newWidth, newHeight],
             },
             ...obstacles.slice(selectedObstacleIndex + 1),
           ];
