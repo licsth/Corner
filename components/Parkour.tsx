@@ -12,6 +12,8 @@ export interface Obstacle {
   size: [number, number];
 }
 
+const goalRadius = 100;
+
 export const Parkour: FunctionComponent = () => {
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [selectedObstacleIndex, setSelectedObstacleIndex] = useState<
@@ -23,6 +25,30 @@ export const Parkour: FunctionComponent = () => {
     position: [0, 0],
   });
   const [elementMoving, setElementMoving] = useState(true);
+  const [goalPosition, setGoalPosition] = useState<[number, number]>([0, 0]);
+
+  useEffect(() => {
+    // Function to update the goal position
+    const updateGoalPosition = () => {
+      if (typeof window !== "undefined") {
+        setGoalPosition([
+          window.innerWidth - goalRadius,
+          window.innerHeight / 2,
+        ]);
+      }
+    };
+
+    // Update goal position on mount
+    updateGoalPosition();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", updateGoalPosition);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateGoalPosition);
+    };
+  }, []);
 
   const addObstacle: MouseEventHandler = (e) => {
     // don't allow when margin bottom is less than 10
@@ -198,6 +224,15 @@ export const Parkour: FunctionComponent = () => {
 
   return (
     <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
+      <div
+        className="absolute rounded-full bg-green-500"
+        style={{
+          left: goalPosition[0],
+          top: goalPosition[1],
+          width: goalRadius,
+          height: goalRadius,
+        }}
+      />
       {obstacles.map((obstacle, index) => (
         <div
           key={index}
