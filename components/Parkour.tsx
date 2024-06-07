@@ -25,18 +25,27 @@ export const Parkour: FunctionComponent = () => {
   const [elementMoving, setElementMoving] = useState(true);
 
   const addObstacle: MouseEventHandler = (e) => {
+    // don't allow when margin bottom is less than 10
+    if (e.clientY > window.innerHeight - 10) return;
     const newObstacle: Obstacle = {
       position: [e.clientX, e.clientY],
       size: [100, 10],
     };
+    // restrict obstacles width to be within the window
+    newObstacle.size[0] = Math.min(
+      newObstacle.size[0],
+      window.innerWidth - newObstacle.position[0]
+    );
+
     setObstacles([...obstacles, newObstacle]);
     setSelectedObstacleIndex(obstacles.length);
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedObstacleIndex === null) return;
       // remove selected obstacle on delete key press
-      if (e.key === "Backspace" && selectedObstacleIndex !== null) {
+      if (e.key === "Backspace") {
         setObstacles((obstacles) => [
           ...obstacles.slice(0, selectedObstacleIndex),
           ...obstacles.slice(selectedObstacleIndex + 1),
@@ -45,10 +54,11 @@ export const Parkour: FunctionComponent = () => {
         return;
       }
       // rotate selected obstacle on tab key press
-      if (e.key === "Tab" && selectedObstacleIndex !== null) {
+      if (e.key === "Tab") {
         e.preventDefault();
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
+
           return [
             ...obstacles.slice(0, selectedObstacleIndex),
             {
@@ -61,9 +71,12 @@ export const Parkour: FunctionComponent = () => {
         return;
       }
       // make selected obstacles wider on right arrow key press
-      if (e.key === "ArrowRight" && selectedObstacleIndex !== null) {
+      if (e.key === "ArrowRight") {
+        // pass if selected obstacle is already at the right edge
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
+          if (obstacle.position[0] + obstacle.size[0] + 10 > window.innerWidth)
+            return obstacles;
           return [
             ...obstacles.slice(0, selectedObstacleIndex),
             {
@@ -76,7 +89,7 @@ export const Parkour: FunctionComponent = () => {
         return;
       }
       // make selected obstacles narrower on left arrow key press
-      if (e.key === "ArrowLeft" && selectedObstacleIndex !== null) {
+      if (e.key === "ArrowLeft") {
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
           return [
@@ -91,9 +104,12 @@ export const Parkour: FunctionComponent = () => {
         return;
       }
       // make selected obstacles taller on down arrow key press
-      if (e.key === "ArrowDown" && selectedObstacleIndex !== null) {
+      if (e.key === "ArrowDown") {
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
+          // pass if selected obstacle is already at the bottom edge
+          if (obstacle.position[1] + obstacle.size[1] + 10 > window.innerHeight)
+            return obstacles;
           return [
             ...obstacles.slice(0, selectedObstacleIndex),
             {
@@ -106,7 +122,7 @@ export const Parkour: FunctionComponent = () => {
         return;
       }
       // make selected obstacles shorter on up arrow key press
-      if (e.key === "ArrowUp" && selectedObstacleIndex !== null) {
+      if (e.key === "ArrowUp") {
         setObstacles((obstacles) => {
           const obstacle = obstacles[selectedObstacleIndex];
           return [
