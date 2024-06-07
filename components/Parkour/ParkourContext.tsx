@@ -60,7 +60,7 @@ export const ParkourContextWrapper: FunctionComponent<{
     direction: [3, 0.95],
     position: [0, 0],
   });
-  const [elementMoving, setElementMoving] = useState(true);
+  const [elementMoving, setElementMoving] = useState(false);
   const [goalPosition, setGoalPosition] = useState<[number, number]>([0, 0]);
   const [goalRadius, setGoalRadius] = useState(100);
   const [goalSelected, setGoalSelected] = useState(false);

@@ -74,6 +74,10 @@ export const ElementComponent: FunctionComponent = () => {
 
   return (
     <div
+      onClick={(e) => {
+        e.stopPropagation();
+        setElementMoving((e) => !e);
+      }}
       className={"absolute rounded-full " + `bg-${element.color}-500`}
       style={{
         left: element.position[0],
