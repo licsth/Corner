@@ -1,12 +1,5 @@
-import {
-  Dispatch,
-  FunctionComponent,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { Obstacle, ParkourContext } from "./Parkour";
+import { FunctionComponent, useEffect } from "react";
+import { useParkourContext } from "./ParkourContext";
 
 export const Obstacles: FunctionComponent = () => {
   const {
@@ -14,7 +7,7 @@ export const Obstacles: FunctionComponent = () => {
     setObstacles,
     selectedObstacleIndex,
     setSelectedObstacleIndex,
-  } = useContext(ParkourContext);
+  } = useParkourContext();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

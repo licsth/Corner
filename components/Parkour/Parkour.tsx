@@ -1,68 +1,26 @@
-import {
-  Dispatch,
-  FunctionComponent,
-  MouseEventHandler,
-  SetStateAction,
-  createContext,
-  useEffect,
-  useState,
-} from "react";
-import { Element, colors, elementSize } from "../Gameboard";
+import { FunctionComponent, MouseEventHandler, useEffect } from "react";
+import { colors, elementSize } from "../Gameboard";
 import { checkCollision } from "../../utilities/checkCollision";
 import { Obstacles } from "./Obstacles";
 import { ElementComponent } from "./Element";
+import { useParkourContext } from "./ParkourContext";
 
 export interface Obstacle {
   position: [number, number];
   size: [number, number];
 }
 
-export const ParkourContext = createContext<{
-  obstacles: Obstacle[];
-  setObstacles: Dispatch<SetStateAction<Obstacle[]>>;
-  selectedObstacleIndex: number | null;
-  setSelectedObstacleIndex: Dispatch<SetStateAction<number | null>>;
-  element: Element;
-  setElement: Dispatch<SetStateAction<Element>>;
-  elementMoving: boolean;
-  setElementMoving: Dispatch<SetStateAction<boolean>>;
-  goalRadius: number;
-  setGoalRadius: Dispatch<SetStateAction<number>>;
-  goalPosition: [number, number];
-  setGoalPosition: Dispatch<SetStateAction<[number, number]>>;
-}>({
-  obstacles: [],
-  setObstacles: () => {},
-  selectedObstacleIndex: null,
-  setSelectedObstacleIndex: () => {},
-  element: {
-    color: "yellow",
-    direction: [3, 1],
-    position: [0, 0],
-  },
-  setElement: () => {},
-  elementMoving: false,
-  setElementMoving: () => {},
-  goalRadius: 100,
-  setGoalRadius: () => {},
-  goalPosition: [0, 0],
-  setGoalPosition: () => {},
-});
-
 export const Parkour: FunctionComponent = () => {
-  const [obstacles, setObstacles] = useState<Obstacle[]>([]);
-  const [selectedObstacleIndex, setSelectedObstacleIndex] = useState<
-    number | null
-  >(null);
-
-  const [element, setElement] = useState<Element>({
-    color: "yellow",
-    direction: [2, 0.7],
-    position: [0, 0],
-  });
-  const [elementMoving, setElementMoving] = useState(true);
-  const [goalPosition, setGoalPosition] = useState<[number, number]>([0, 0]);
-  const [goalRadius, setGoalRadius] = useState(100);
+  const {
+    goalRadius,
+    setGoalPosition,
+    obstacles,
+    setObstacles,
+    setSelectedObstacleIndex,
+    setElement,
+    elementMoving,
+    goalPosition,
+  } = useParkourContext();
 
   useEffect(() => {
     // Function to update the goal position
@@ -100,7 +58,7 @@ export const Parkour: FunctionComponent = () => {
       window.innerWidth - newObstacle.position[0]
     );
 
-    setObstacles([...obstacles, newObstacle]);
+    setObstacles((obstacles) => [...obstacles, newObstacle]);
     setSelectedObstacleIndex(obstacles.length);
   };
 
@@ -152,35 +110,18 @@ export const Parkour: FunctionComponent = () => {
   }, [elementMoving, obstacles]);
 
   return (
-    <ParkourContext.Provider
-      value={{
-        obstacles,
-        setObstacles,
-        selectedObstacleIndex,
-        setSelectedObstacleIndex,
-        element,
-        setElement,
-        elementMoving,
-        setElementMoving,
-        goalRadius,
-        setGoalRadius,
-        goalPosition,
-        setGoalPosition,
-      }}
-    >
-      <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
-        <div
-          className="absolute rounded-full bg-green-500"
-          style={{
-            left: goalPosition[0],
-            top: goalPosition[1],
-            width: goalRadius,
-            height: goalRadius,
-          }}
-        />
-        <Obstacles />
-        <ElementComponent />
-      </div>
-    </ParkourContext.Provider>
+    <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
+      <div
+        className="absolute rounded-full bg-green-500"
+        style={{
+          left: goalPosition[0],
+          top: goalPosition[1],
+          width: goalRadius,
+          height: goalRadius,
+        }}
+      />
+      <Obstacles />
+      <ElementComponent />
+    </div>
   );
 };

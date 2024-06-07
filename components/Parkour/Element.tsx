@@ -1,11 +1,11 @@
-import { FunctionComponent, useContext, useEffect } from "react";
-import { ParkourContext } from "./Parkour";
+import { FunctionComponent, useEffect } from "react";
 import { colors, elementSize } from "../Gameboard";
 import { checkCollision } from "../../utilities/checkCollision";
+import { useParkourContext } from "./ParkourContext";
 
 export const ElementComponent: FunctionComponent = () => {
   const { element, obstacles, setElement, elementMoving, setElementMoving } =
-    useContext(ParkourContext);
+    useParkourContext();
 
   useEffect(() => {
     const interval = setInterval(() => {
