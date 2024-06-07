@@ -1,4 +1,4 @@
-import { Obstacle } from '../components/Parkour'
+import { Obstacle } from '../components/Parkour/Parkour'
 import { elementSize } from '../components/Gameboard'
 
 export const checkCollision = (

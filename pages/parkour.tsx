@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Parkour } from "../components/Parkour";
+import { Parkour } from "../components/Parkour/Parkour";
 
 const ParkourPage: NextPage = () => {
   return (

@@ -7,9 +7,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Element, colors, elementSize } from "./Gameboard";
-import { checkCollision } from "../utilities/checkCollision";
+import { Element, colors, elementSize } from "../Gameboard";
+import { checkCollision } from "../../utilities/checkCollision";
 import { Obstacles } from "./Obstacles";
+import { ElementComponent } from "./Element";
 
 export interface Obstacle {
   position: [number, number];
@@ -21,11 +22,17 @@ export const ParkourContext = createContext<{
   setObstacles: Dispatch<SetStateAction<Obstacle[]>>;
   selectedObstacleIndex: number | null;
   setSelectedObstacleIndex: Dispatch<SetStateAction<number | null>>;
+  element: Element;
 }>({
   obstacles: [],
   setObstacles: () => {},
   selectedObstacleIndex: null,
   setSelectedObstacleIndex: () => {},
+  element: {
+    color: "yellow",
+    direction: [3, 1],
+    position: [0, 0],
+  },
 });
 
 const goalRadius = 100;
@@ -138,6 +145,7 @@ export const Parkour: FunctionComponent = () => {
         setObstacles,
         selectedObstacleIndex,
         setSelectedObstacleIndex,
+        element,
       }}
     >
       <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
@@ -151,15 +159,7 @@ export const Parkour: FunctionComponent = () => {
           }}
         />
         <Obstacles />
-        <div
-          className={"absolute rounded-full " + `bg-${element.color}-500`}
-          style={{
-            left: element.position[0],
-            top: element.position[1],
-            width: elementSize,
-            height: elementSize,
-          }}
-        />
+        <ElementComponent />
       </div>
     </ParkourContext.Provider>
   );
