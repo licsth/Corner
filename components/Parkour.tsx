@@ -1,7 +1,9 @@
 import {
+  Dispatch,
   FunctionComponent,
   MouseEventHandler,
   SetStateAction,
+  createContext,
   useEffect,
   useState,
 } from "react";
@@ -13,6 +15,18 @@ export interface Obstacle {
   position: [number, number];
   size: [number, number];
 }
+
+export const ParkourContext = createContext<{
+  obstacles: Obstacle[];
+  setObstacles: Dispatch<SetStateAction<Obstacle[]>>;
+  selectedObstacleIndex: number | null;
+  setSelectedObstacleIndex: Dispatch<SetStateAction<number | null>>;
+}>({
+  obstacles: [],
+  setObstacles: () => {},
+  selectedObstacleIndex: null,
+  setSelectedObstacleIndex: () => {},
+});
 
 const goalRadius = 100;
 
@@ -118,31 +132,35 @@ export const Parkour: FunctionComponent = () => {
   }, [elementMoving, obstacles]);
 
   return (
-    <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
-      <div
-        className="absolute rounded-full bg-green-500"
-        style={{
-          left: goalPosition[0],
-          top: goalPosition[1],
-          width: goalRadius,
-          height: goalRadius,
-        }}
-      />
-      <Obstacles
-        obstacles={obstacles}
-        setObstacles={setObstacles}
-        selectedObstacleIndex={selectedObstacleIndex}
-        setSelectedObstacleIndex={setSelectedObstacleIndex}
-      />
-      <div
-        className={"absolute rounded-full " + `bg-${element.color}-500`}
-        style={{
-          left: element.position[0],
-          top: element.position[1],
-          width: elementSize,
-          height: elementSize,
-        }}
-      />
-    </div>
+    <ParkourContext.Provider
+      value={{
+        obstacles,
+        setObstacles,
+        selectedObstacleIndex,
+        setSelectedObstacleIndex,
+      }}
+    >
+      <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
+        <div
+          className="absolute rounded-full bg-green-500"
+          style={{
+            left: goalPosition[0],
+            top: goalPosition[1],
+            width: goalRadius,
+            height: goalRadius,
+          }}
+        />
+        <Obstacles />
+        <div
+          className={"absolute rounded-full " + `bg-${element.color}-500`}
+          style={{
+            left: element.position[0],
+            top: element.position[1],
+            width: elementSize,
+            height: elementSize,
+          }}
+        />
+      </div>
+    </ParkourContext.Provider>
   );
 };

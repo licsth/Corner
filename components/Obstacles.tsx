@@ -2,24 +2,20 @@ import {
   Dispatch,
   FunctionComponent,
   SetStateAction,
+  useContext,
   useEffect,
   useState,
 } from "react";
-import { Obstacle } from "./Parkour";
+import { Obstacle, ParkourContext } from "./Parkour";
 
-interface Props {
-  obstacles: Obstacle[];
-  setObstacles: Dispatch<SetStateAction<Obstacle[]>>;
-  selectedObstacleIndex: number | null;
-  setSelectedObstacleIndex: Dispatch<SetStateAction<number | null>>;
-}
+export const Obstacles: FunctionComponent = () => {
+  const {
+    obstacles,
+    setObstacles,
+    selectedObstacleIndex,
+    setSelectedObstacleIndex,
+  } = useContext(ParkourContext);
 
-export const Obstacles: FunctionComponent<Props> = ({
-  obstacles,
-  setObstacles,
-  selectedObstacleIndex,
-  setSelectedObstacleIndex,
-}) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedObstacleIndex === null) return;
