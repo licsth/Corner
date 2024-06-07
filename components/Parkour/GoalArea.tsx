@@ -33,15 +33,28 @@ export const GoalArea: FunctionComponent = () => {
     };
   }, []);
 
-  // expand / shrink goal on plus and minus keys
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (goalSelected) {
+        // expand / shrink goal on plus and minus keys
         if (e.key === "+") {
           setGoalRadius((r) => r + 10);
         }
         if (e.key === "-") {
           setGoalRadius((r) => Math.max(10, r - 10));
+        }
+        // move goal on arrow keys
+        if (e.key === "ArrowUp") {
+          setGoalPosition(([x, y]) => [x, y - 10]);
+        }
+        if (e.key === "ArrowDown") {
+          setGoalPosition(([x, y]) => [x, y + 10]);
+        }
+        if (e.key === "ArrowLeft") {
+          setGoalPosition(([x, y]) => [x - 10, y]);
+        }
+        if (e.key === "ArrowRight") {
+          setGoalPosition(([x, y]) => [x + 10, y]);
         }
       }
     };
