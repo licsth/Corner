@@ -133,25 +133,32 @@ export const Parkour: FunctionComponent = () => {
         if (!elementMoving) return element;
         const [x, y] = element.position;
         const [dx, dy] = element.direction;
-        const newX = Math.max(
+        let newX = Math.max(
           0,
           Math.min(x + dx, window.innerWidth - elementSize)
         );
-        const newY = Math.max(
+        let newY = Math.max(
           0,
           Math.min(y + dy, window.innerHeight - elementSize)
         );
-        const bouncedX = x === newX && dx !== 0;
-        const bouncedY = y === newY && dy !== 0;
-
-        let newDx = bouncedX ? -dx : dx;
-        let newDy = bouncedY ? -dy : dy;
+        let bouncedX = x === newX && dx !== 0;
+        let bouncedY = y === newY && dy !== 0;
 
         // Check for obstacle collisions
-        const { collidesX, collidesY } = checkCollision(newX, newY, obstacles);
+        const { collidesX, collidesY } = checkCollision(
+          x,
+          y,
+          newX,
+          newY,
+          obstacles
+        );
 
-        if (collidesX) newDx = -newDx;
-        if (collidesY) newDy = -newDy;
+        if (collidesX) newX = x;
+        if (collidesY) newY = y;
+        bouncedX = bouncedX || collidesX;
+        bouncedY = bouncedY || collidesY;
+        let newDx = bouncedX ? -dx : dx;
+        let newDy = bouncedY ? -dy : dy;
 
         return {
           ...element,
@@ -172,7 +179,7 @@ export const Parkour: FunctionComponent = () => {
       {obstacles.map((obstacle, index) => (
         <div
           key={index}
-          className={`absolute ${selectedObstacleIndex === index ? "bg-red-500" : "bg-blue-500"}`}
+          className={`absolute ${selectedObstacleIndex === index ? "bg-red-500" : "bg-slate-500"}`}
           style={{
             left: obstacle.position[0],
             top: obstacle.position[1],
