@@ -23,6 +23,13 @@ export const ParkourContext = createContext<{
   selectedObstacleIndex: number | null;
   setSelectedObstacleIndex: Dispatch<SetStateAction<number | null>>;
   element: Element;
+  setElement: Dispatch<SetStateAction<Element>>;
+  elementMoving: boolean;
+  setElementMoving: Dispatch<SetStateAction<boolean>>;
+  goalRadius: number;
+  setGoalRadius: Dispatch<SetStateAction<number>>;
+  goalPosition: [number, number];
+  setGoalPosition: Dispatch<SetStateAction<[number, number]>>;
 }>({
   obstacles: [],
   setObstacles: () => {},
@@ -33,9 +40,14 @@ export const ParkourContext = createContext<{
     direction: [3, 1],
     position: [0, 0],
   },
+  setElement: () => {},
+  elementMoving: false,
+  setElementMoving: () => {},
+  goalRadius: 100,
+  setGoalRadius: () => {},
+  goalPosition: [0, 0],
+  setGoalPosition: () => {},
 });
-
-const goalRadius = 100;
 
 export const Parkour: FunctionComponent = () => {
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
@@ -45,11 +57,12 @@ export const Parkour: FunctionComponent = () => {
 
   const [element, setElement] = useState<Element>({
     color: "yellow",
-    direction: [3, 1],
+    direction: [2, 0.7],
     position: [0, 0],
   });
   const [elementMoving, setElementMoving] = useState(true);
   const [goalPosition, setGoalPosition] = useState<[number, number]>([0, 0]);
+  const [goalRadius, setGoalRadius] = useState(100);
 
   useEffect(() => {
     // Function to update the goal position
@@ -146,6 +159,13 @@ export const Parkour: FunctionComponent = () => {
         selectedObstacleIndex,
         setSelectedObstacleIndex,
         element,
+        setElement,
+        elementMoving,
+        setElementMoving,
+        goalRadius,
+        setGoalRadius,
+        goalPosition,
+        setGoalPosition,
       }}
     >
       <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
