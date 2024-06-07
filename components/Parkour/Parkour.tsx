@@ -31,7 +31,10 @@ export const Parkour: FunctionComponent = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-slate-800" onClick={addObstacle}>
+    <div
+      className="w-screen h-screen bg-slate-800 overflow-hidden relative"
+      onClick={addObstacle}
+    >
       <GoalArea />
       <Obstacles />
       <ElementComponent />

@@ -1,11 +1,18 @@
 import { FunctionComponent, useEffect } from "react";
-import { colors, elementSize } from "../Gameboard";
+import { colors, elementDiameter } from "../Gameboard";
 import { checkCollision } from "../../utilities/checkCollision";
 import { useParkourContext } from "./ParkourContext";
 
 export const ElementComponent: FunctionComponent = () => {
-  const { element, obstacles, setElement, elementMoving, setElementMoving } =
-    useParkourContext();
+  const {
+    element,
+    obstacles,
+    setElement,
+    elementMoving,
+    goalPosition,
+    goalRadius,
+    setElementMoving,
+  } = useParkourContext();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -15,11 +22,11 @@ export const ElementComponent: FunctionComponent = () => {
         const [dx, dy] = element.direction;
         let newX = Math.max(
           0,
-          Math.min(x + dx, window.innerWidth - elementSize)
+          Math.min(x + dx, window.innerWidth - elementDiameter)
         );
         let newY = Math.max(
           0,
-          Math.min(y + dy, window.innerHeight - elementSize)
+          Math.min(y + dy, window.innerHeight - elementDiameter)
         );
         let bouncedX = x === newX && dx !== 0;
         let bouncedY = y === newY && dy !== 0;
@@ -35,6 +42,17 @@ export const ElementComponent: FunctionComponent = () => {
 
         if (collidesX) newX = x;
         if (collidesY) newY = y;
+
+        // Check for goal collisions
+        const [goalX, goalY] = goalPosition;
+        const distance = Math.sqrt(
+          (goalX - newX - elementDiameter / 2) ** 2 +
+            (goalY - newY - elementDiameter / 2) ** 2
+        );
+        if (distance < goalRadius) {
+          setElementMoving(false);
+        }
+
         bouncedX = bouncedX || collidesX;
         bouncedY = bouncedY || collidesY;
         let newDx = bouncedX ? -dx : dx;
@@ -52,7 +70,7 @@ export const ElementComponent: FunctionComponent = () => {
       });
     }, 20);
     return () => clearInterval(interval);
-  }, [elementMoving, obstacles]);
+  }, [elementMoving, obstacles, goalPosition, goalRadius]);
 
   return (
     <div
@@ -60,8 +78,8 @@ export const ElementComponent: FunctionComponent = () => {
       style={{
         left: element.position[0],
         top: element.position[1],
-        width: elementSize,
-        height: elementSize,
+        width: elementDiameter,
+        height: elementDiameter,
       }}
     />
   );

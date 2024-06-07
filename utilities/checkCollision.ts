@@ -1,5 +1,5 @@
 import { Obstacle } from '../components/Parkour/Parkour'
-import { elementSize } from '../components/Gameboard'
+import { elementDiameter } from '../components/Gameboard'
 
 export const checkCollision = (
   prevX: number,
@@ -8,8 +8,8 @@ export const checkCollision = (
   newY: number,
   obstacles: Obstacle[]
 ) => {
-  const elementRight = newX + elementSize;
-  const elementBottom = newY + elementSize;
+  const elementRight = newX + elementDiameter;
+  const elementBottom = newY + elementDiameter;
 
   for (let obstacle of obstacles) {
     const [obsX, obsY] = obstacle.position;
@@ -23,7 +23,7 @@ export const checkCollision = (
       newY < obsBottom &&
       elementBottom > obsY;
     if (!collides) continue;
-    const collidesXBefore = prevX < obsRight && prevX + elementSize > obsX;
+    const collidesXBefore = prevX < obsRight && prevX + elementDiameter > obsX;
     return { collidesX: !collidesXBefore, collidesY: collidesXBefore };
   }
   return { collidesX: false, collidesY: false };

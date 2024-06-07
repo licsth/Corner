@@ -31,10 +31,10 @@ export const GoalArea: FunctionComponent = () => {
     <div
       className="absolute rounded-full bg-green-500"
       style={{
-        left: goalPosition[0],
-        top: goalPosition[1],
-        width: goalRadius,
-        height: goalRadius,
+        left: goalPosition[0] - goalRadius,
+        top: goalPosition[1] - goalRadius,
+        width: goalRadius * 2,
+        height: goalRadius * 2,
       }}
     />
   );

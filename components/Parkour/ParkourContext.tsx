@@ -52,7 +52,7 @@ export const ParkourContextWrapper: FunctionComponent<{
 
   const [element, setElement] = useState<Element>({
     color: "yellow",
-    direction: [3, 1],
+    direction: [3, 0.95],
     position: [0, 0],
   });
   const [elementMoving, setElementMoving] = useState(true);

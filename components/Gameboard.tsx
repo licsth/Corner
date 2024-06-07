@@ -21,7 +21,7 @@ export interface Element {
   color: string;
 }
 
-export const elementSize = 22;
+export const elementDiameter = 22;
 const circleElementNumber = 51;
 const intervalDuration = 20;
 const directionMagnitude = 2.5;
@@ -99,11 +99,11 @@ export const Gameboard: FunctionComponent = ({}) => {
             const [dx, dy] = element.direction;
             const newX = Math.max(
               0,
-              Math.min(x + dx, window.innerWidth - elementSize)
+              Math.min(x + dx, window.innerWidth - elementDiameter)
             );
             const newY = Math.max(
               0,
-              Math.min(y + dy, window.innerHeight - elementSize)
+              Math.min(y + dy, window.innerHeight - elementDiameter)
             );
             // Bounce off the walls
             const bouncedX = x === newX && dx !== 0;
@@ -152,8 +152,8 @@ export const Gameboard: FunctionComponent = ({}) => {
           style={{
             left: element.position[0],
             top: element.position[1],
-            width: elementSize,
-            height: elementSize,
+            width: elementDiameter,
+            height: elementDiameter,
           }}
         />
       ))}
