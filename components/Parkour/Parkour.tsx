@@ -67,8 +67,8 @@ export const Parkour: FunctionComponent = () => {
         return {
           ...element,
           direction: [
-            (e.clientX - element.position[0]) / 100,
-            (e.clientY - element.position[1]) / 100,
+            (e.clientX - element.position[0]) / 50,
+            (e.clientY - element.position[1]) / 50,
           ],
         };
       });
