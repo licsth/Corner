@@ -12,6 +12,8 @@ export const ElementComponent: FunctionComponent = () => {
     goalPosition,
     goalRadius,
     setElementMoving,
+    setElementSelected,
+    elementSelected,
   } = useParkourContext();
 
   useEffect(() => {
@@ -72,18 +74,38 @@ export const ElementComponent: FunctionComponent = () => {
     return () => clearInterval(interval);
   }, [elementMoving, obstacles, goalPosition, goalRadius]);
 
+  // pause element on space bar press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === " ") {
+        setElementMoving((e) => !e);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div
       onClick={(e) => {
         e.stopPropagation();
-        setElementMoving((e) => !e);
+        setElementSelected((e) => !e);
       }}
-      className={"absolute rounded-full " + `bg-${element.color}-500`}
+      className={
+        "absolute rounded-full " +
+        `bg-${element.color}-500 ` +
+        (elementSelected ? `border-2 border-${element.color}-700` : "")
+      }
       style={{
         left: element.position[0],
         top: element.position[1],
         width: elementDiameter,
         height: elementDiameter,
+        zIndex: 100,
       }}
     />
   );
