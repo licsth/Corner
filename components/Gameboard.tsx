@@ -30,6 +30,7 @@ export const Gameboard: FunctionComponent = ({}) => {
   const [elements, setElements] = useState<Element[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [gravityOn, setGravityOn] = useState(false);
+  const [spiralOn, setSpiralOn] = useState(false);
 
   const addElement: MouseEventHandler = (e) => {
     const angle = Math.random() * 2 * Math.PI;
@@ -77,6 +78,8 @@ export const Gameboard: FunctionComponent = ({}) => {
         );
       } else if (e.key === " ") {
         setGravityOn((g) => !g);
+      } else if (e.key === "s") {
+        setSpiralOn((s) => !s);
       }
     };
 
@@ -142,6 +145,29 @@ export const Gameboard: FunctionComponent = ({}) => {
     }, intervalDuration);
     return () => clearInterval(interval);
   }, [gravityOn]);
+
+  useEffect(() => {
+    if (!spiralOn) return;
+    const interval = setInterval(() => {
+      setMousePosition((mousePosition) => {
+        setElements((elements) => {
+          // add an element with angle dependent on current time
+          const angle = Date.now() / 200;
+          const newElement: Element = {
+            direction: [
+              Math.cos(angle) * directionMagnitude,
+              Math.sin(angle) * directionMagnitude,
+            ],
+            position: [mousePosition.x, mousePosition.y],
+            color: colors[Math.floor(Math.random() * colors.length)],
+          };
+          return [...elements, newElement];
+        });
+        return mousePosition;
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, [spiralOn]);
 
   return (
     <div className="fixed h-screen bg-slate-800 w-screen" onClick={addElement}>
