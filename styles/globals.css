@@ -1,6 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source inline("bg-{red,green,blue,fuchsia,yellow,orange,violet}-500");
+@source inline("border-{red,green,blue,fuchsia,yellow,orange,violet}-700");
+
+@config '../tailwind.config.js';
 
 .x-mark {
   width: 26px;
